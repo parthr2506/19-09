@@ -14,8 +14,6 @@ const CreatePost = () => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    // Inside your CreatePost component
-    // ...
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,7 +26,7 @@ const CreatePost = () => {
         try {
             const response = await axios.post(
                 "http://localhost:5000/api/post/create",
-                { ...form, slug }, // Add authorId to the request body
+                { ...form, slug },
                 {
                     headers: { Authorization: `BEARER ${token}` },
                     withCredentials: true
@@ -40,11 +38,9 @@ const CreatePost = () => {
                 navigate("/home");
             }
         } catch (error) {
-            // ...
+            throw new Error(error)
         }
     };
-
-
 
     return (
         <div>

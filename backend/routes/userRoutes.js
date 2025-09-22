@@ -1,9 +1,12 @@
 const express = require("express")
 const router = express.Router();
-const { signup, login, logout } = require("../controllers/userController")
+const isLoggedIn = require("../middlewares/isLoggedIn")
+
+const { signup, login, logout, user } = require("../controllers/userController")
 
 router.route("/signup").post(signup)
 router.route("/login").post(login)
+router.route("/user").get(isLoggedIn, user)
 router.route("/logout").get(logout)
 
 module.exports = router
