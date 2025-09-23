@@ -69,3 +69,20 @@ exports.getAllPosts = async (req, res) => {
 
     }
 }
+
+exports.getPostById = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const post = await prisma.post.findUnique({
+            where: {
+                id: id
+            }
+        });
+        if (!post) {
+            return res.status(404).json({ success: false, message: "Post not found" });
+        }
+        res.json(post);
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error fetching post" });
+    }
+};

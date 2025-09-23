@@ -1,14 +1,28 @@
-import { useState } from "react";
-import api from "./api";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import api from './api';
 
-const CreatePost = () => {
+const EditPost = () => {
     const navigate = useNavigate();
-    const [form, setForm] = useState({
-        title: "",
-        body: ""
-    });
-    const [message, setMessage] = useState("");
+    const { id } = useParams();
+    const [form, setForm] = useState({ title: "", body: "" })
+    const [message, setMessage] = useState("")
+
+    useEffect(() => {
+        const fetchPost = async () => {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await api.get(`/post/${id}`, {
+                    headers: { Authorization: `BEARER ${token}` },
+                    withCredentials: true
+                });
+                setForm({ title: response.data.title, body: response.data.body });
+            } catch (error) {
+                console.error("Error fetching post:", error);
+            }
+        }
+        fetchPost();
+    }, [id]);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,31 +31,31 @@ const CreatePost = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
-
-        const slug = form.title.toLowerCase().replace(/\s+/g, '-');
         const token = localStorage.getItem("token");
+
         try {
-            const response = await api.post(
-                "/post/create",
-                { ...form, slug },
+            const response = await api.put(
+                `/post/update/${id}`,
+                form,
                 {
                     headers: { Authorization: `BEARER ${token}` },
                     withCredentials: true
                 }
             );
 
-            if (response.status === 201) {
-                setMessage("Post created successfully!");
+            if (response.status === 200) {
+                setMessage("Updates are successfully!");
                 navigate("/home");
             }
         } catch (error) {
-            throw new Error(error)
+            console.error("Error editing post:", error);
+            setMessage("Error editing post. Please try again.");
         }
     };
 
     return (
-        <div className="card">
-            <h2>Create a New Post</h2>
+        <div className='card'>
+            <h2>Edit Post</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="title">Title:</label>
@@ -65,14 +79,11 @@ const CreatePost = () => {
                         required
                     ></textarea>
                 </div>
-                <button style={{ margin: '10px' }} type="submit">Create Post</button>
+                <button type="submit">Edit</button>
             </form>
-            <Link to="/home">
-                <button style={{ margin: '20px' }}>Back</button>
-            </Link>
             {message && <p>{message}</p>}
         </div>
     );
 };
 
-export default CreatePost;
+export default EditPost;

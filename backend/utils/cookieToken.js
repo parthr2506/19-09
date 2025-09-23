@@ -7,8 +7,8 @@ const cookieToken = (user, res) => {
             Date.now() + 3 * 24 * 60 * 60 * 1000
         ),
         httpOnly: true,
-        sameSite: 'lax',
-        secure: false,
+        // sameSite: 'lax',
+        // secure: false,
     }
     user.password = undefined
     res.status(200).cookie("token", token, options).json({

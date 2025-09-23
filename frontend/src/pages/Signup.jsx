@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-// import { useAuth } from "./AuthContext";
+import api from "./api";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../useAuth";
 
 const Signup = () => {
@@ -28,7 +27,7 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/signup', formData);
+            await api.post('/signup', formData);
             // alert("record entered successfully");
             setMessage("SignUp Successefull Redirecting....")
             setFormData({ name: '', email: '', password: '' });
@@ -36,7 +35,6 @@ const Signup = () => {
 
         } catch (error) {
             console.error('Error:', error);
-            const errorMessage = error.response?.data?.message || error.message || "Network Error";
             // alert(`Error: ${errorMessage}`);
             setMessage("Signup Failed Try Again")
         }
@@ -45,28 +43,36 @@ const Signup = () => {
     if (isAuthenticated === null) {
         return <div>Loading...</div>;
     }
-
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>SignUp</h2>
-            <label htmlFor="name">Name:</label>
-            <br />
-            <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
-            <br /><br />
-            <label htmlFor="email">Email:</label>
-            <br />
-            <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
-            <br /><br />
+        <div className="form">
+            <form onSubmit={handleSubmit}>
+                <h2>SignUp</h2>
+                <label htmlFor="name">Name:</label>
+                <br />
+                <input type="text" name="name" id="name" placeholder="name" value={formData.name} onChange={handleChange} required />
+                <br /><br />
+                <label htmlFor="email">Email:</label>
+                <br />
+                <input type="email" name="email" id="email" placeholder="email" value={formData.email} onChange={handleChange} required />
+                <br /><br />
 
-            <label htmlFor="password">Password:</label>
-            <br />
-            <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
-            <br /><br />
+                <label htmlFor="password">Password:</label>
+                <br />
+                <input type="password" name="password" id="password" placeholder="password" value={formData.password} onChange={handleChange} required />
+                <br /><br />
 
-            <button type="submit">Submit</button>
-            {message && <p>{message}</p>}
-        </form>
+                <button type="submit">Submit</button>
+                {message && <p>{message}</p>}
+            </form>
+            <p>Already a user
+                <br></br>
+                <Link to='/login'>
+                    Login
+                </Link>
 
+            </p>
+
+        </div>
     );
 };
 

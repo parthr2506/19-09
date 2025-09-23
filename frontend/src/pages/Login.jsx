@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-// import { useAuth } from "./AuthContext";
-
-import { useAuth } from "../useAuth"; // Update this import
+import api from './api';
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../useAuth";
 
 const Login = () => {
     const { setIsAuthenticated, isAuthenticated } = useAuth();
@@ -12,7 +11,8 @@ const Login = () => {
         email: "",
         password: ""
     });
-    const [message, setMessage] = useState("")
+    const [message, setMessage] = useState("");
+
     useEffect(() => {
         if (isAuthenticated) {
             navigate("/home", { replace: true });
@@ -35,35 +35,42 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:5000/api/login", form, { withCredentials: true });
-            // alert("Login Success");
-            setMessage("Login Successfull Redirecting....")
+            await api.post("/login", form);
+            setMessage("Login Successful Redirecting...");
             setIsAuthenticated(true);
-            navigate("/home", { replace: true });
         } catch (err) {
             console.error(err);
-            // alert("Login Failed. Check your credentials.");
-            setMessage("Invalid Credentials! Try Again")
+            setMessage("Invalid Credentials try again");
         }
     };
+
     if (isAuthenticated === null) {
         return <div>Loading...</div>;
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Login</h2>
-            <label htmlFor="email">Email:</label>
-            <br />
-            <input name="email" placeholder="email" onChange={handleChange} />
-            <br /><br />
-            <label htmlFor="password">Password:</label>
-            <br />
-            <input type="password" name="password" placeholder="password" onChange={handleChange} />
-            <br /><br />
-            <button type="submit">Login</button>
-            {message && <p>{message}</p>}
-        </form>
+        <div className="form">
+            <form onSubmit={handleSubmit}>
+                <h2>Login</h2>
+                <label htmlFor="email">Email:</label>
+                <br />
+                <input name="email" id="email" placeholder="email" onChange={handleChange} />
+                <br /><br />
+                <label htmlFor="password">Password:</label>
+                <br />
+                <input type="password" name="password" id="password" placeholder="password" onChange={handleChange} />
+                <br /><br />
+                <button type="submit">Login</button>
+                {message && <p>{message}</p>}
+
+            </form>
+            <p>Not a User
+                <br></br>
+                <Link to='/'>
+                    Signup
+                </Link>
+            </p>
+        </div>
     );
 };
 

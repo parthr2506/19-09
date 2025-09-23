@@ -6,7 +6,6 @@ require("dotenv").config();
 
 const app = express();
 
-
 const corsOptions = {
     origin: 'http://localhost:5173',
     credentials: true,
@@ -14,7 +13,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
@@ -26,10 +24,9 @@ const postRouter = require("./routes/postRoutes")
 app.use("/api", userRouter)
 app.use("/api", postRouter)
 
-
-app.get("/", (req, res) => {
-    res.send("Hello Form Backend")
-})
+// app.get("/", (req, res) => {
+//     res.send("Hello Form Backend")
+// })
 app.listen(5000, () => {
     console.log("Listening on 5000...")
 })
